@@ -1,11 +1,14 @@
 import uuid
 import sqlalchemy
-from sqlalchemy import DateTime, func, String
+from sqlalchemy import DateTime, func, String, text
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from sqlalchemy.orm import (DeclarativeBase, Mapped, declarative_mixin, mapped_column)
+from sqlalchemy.orm import (
+    DeclarativeBase, Mapped, declarative_mixin, mapped_column
+    )
 
 
 metadata = sqlalchemy.MetaData()
+
 
 @declarative_mixin
 class UUIDixin:
@@ -29,9 +32,30 @@ class Base(TimestampMixin, UUIDixin, DeclarativeBase):
 
 
 class Users(Base):
+
     __tablename__ = "users"
     phone_number: Mapped[str] = mapped_column(String, unique=True)
     email: Mapped[str] = mapped_column(String, unique=True)
     first_name: Mapped[str]
     last_name: Mapped[str]
     password: Mapped[str]
+
+    is_user: Mapped[bool] = mapped_column(
+        default=True,
+        server_default=text('true'),
+        nullable=False
+        )
+    is_admin: Mapped[bool] = mapped_column(
+        default=False,
+        server_default=text('false'),
+        nullable=False
+        )
+    is_super_admin: Mapped[bool] = mapped_column(
+        default=False,
+        server_default=text('false'),
+        nullable=False
+        )
+    extend_existing = True
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(id={self.id})"

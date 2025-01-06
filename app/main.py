@@ -1,4 +1,13 @@
-import secrets
+from fastapi import FastAPI
+from app.users.router import router as router_users
 
-secret_key = secrets.token_urlsafe(64)
-print(secret_key)
+
+app = FastAPI()
+
+
+@app.get("/")
+def home_page():
+    return {"message": "Привет, Якут!"}
+
+
+app.include_router(router_users)
