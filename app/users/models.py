@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 import sqlalchemy
 from sqlalchemy import DateTime, func, String, text
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
@@ -20,10 +21,16 @@ class UUIDixin:
 @declarative_mixin
 class TimestampMixin:
     created_at: Mapped[str] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(),
+        DateTime(timezone=True),
+        server_default=func.now(),
+        default=datetime.now(),
     )
-    updated_at: Mapped[str] = mapped_column(
-        DateTime(timezone=True), onupdate=func.now(),
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=datetime.now(),
+        server_default=func.now(),
+        onupdate=datetime.now(),
+        server_onupdate=sqlalchemy.FetchedValue(),
     )
 
 
